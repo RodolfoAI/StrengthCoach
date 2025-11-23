@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.Ports;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -28,6 +29,8 @@ namespace StrengthCoach.View.UserControls
             InitializeComponent();
         }
 
+        private SerialPort serialPort;
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private string buttonContent;
@@ -50,29 +53,51 @@ namespace StrengthCoach.View.UserControls
         {
             // Get the MainWindow instance
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+            // Reset display reading
+            mainWindow.PunchScore = $"Fuerza generada: ";
 
-            if (ButtonContent == "Parar") 
+            ButtonContent = "Iniciando lectura";
+
+            // Establish connection with arduino
+            serialPort = new SerialPort("COM5", 9600);
+            try { 
+                serialPort.Open();
+            }
+            catch (UnauthorizedAccessException ex)
             {
-                ButtonContent = "Deteniendo lectura";
-
-                // disestablish connection with microcontroller
-
-                // reset reading
-                mainWindow.PunchScore = $"Fuerza generada: ";
+                MessageBox.Show($"Error al conectar con el dispositivo, posiblemente el puerto serial esta en uso por otra aplicacion: {ex.Message}", 
+                    "Error de conexión", MessageBoxButton.OK, MessageBoxImage.Error);
                 ButtonContent = "Iniciar";
+                return;
             }
-            else 
+
+            // send start command (1) to arduino
+            serialPort.WriteLine("1");
+
+            var score = serialPort.ReadLine();
+            string displayKilograms = "0.0";
+            if (decimal.TryParse(score, out decimal grams))
             {
-                ButtonContent = "Iniciando lectura";
+                // Convert grams to kilograms
+                decimal kilograms = grams / 1000m;
 
-                // establish connection with microcontroller
+                // Round to one decimal place
+                // The MidpointRounding.AwayFromZero ensures 1.25 rounds to 1.3
+                decimal roundedKilograms = Math.Round(kilograms, 1, MidpointRounding.AwayFromZero);
 
-                //implement arduino reading
-                mainWindow.PunchScore = $"Fuerza generada: {20}";
-
-                // Update button content
-                ButtonContent = "Parar";
+                // 3. Format the result for display 
+                // The "F1" format specifier ensures exactly one decimal place
+                displayKilograms = roundedKilograms.ToString("F1");
             }
+
+            mainWindow.PunchScore = $"Fuerza generada: {displayKilograms}";
+
+            // send stop command (0) to arduino
+            serialPort.WriteLine("0");
+
+            serialPort.Close();
+       
+            ButtonContent = "Iniciar";
         }
     }
 
