@@ -55,8 +55,7 @@ namespace StrengthCoach.View.UserControls
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
             // Reset display reading
             mainWindow.PunchScore = "Fuerza generada: ";
-
-            ButtonContent = "Iniciando lectura";
+            
 
             // Establish connection with arduino
             serialPort = new SerialPort("COM5", 9600);
@@ -74,31 +73,48 @@ namespace StrengthCoach.View.UserControls
             // send start command (1) to arduino
             serialPort.WriteLine("1");
 
-            var score = serialPort.ReadLine();
+            int hitTime = 6;
             string displayKilograms = "0.0";
-            if (decimal.TryParse(score, out decimal grams))
+
+            StartButton startButton = mainWindow.FindName("startButton") as StartButton;
+            startButton.IsEnabled = false;
+
+            Task readScore = Task.Run(() =>
             {
-                // Convert grams to kilograms
-                decimal kilograms = grams / 1000m;
+                var score = serialPort.ReadLine();
+                
+                if (decimal.TryParse(score, out decimal grams))
+                {
+                    // Convert grams to kilograms
+                    decimal kilograms = grams / 1000m;
 
-                // Round to one decimal place
-                // The MidpointRounding.AwayFromZero ensures 1.25 rounds to 1.3
-                decimal roundedKilograms = Math.Round(kilograms, 1, MidpointRounding.AwayFromZero);
+                    // Round to one decimal place
+                    // The MidpointRounding.AwayFromZero ensures 1.25 rounds to 1.3
+                    decimal roundedKilograms = Math.Round(kilograms, 1, MidpointRounding.AwayFromZero);
 
-                // 3. Format the result for display 
-                // The "F1" format specifier ensures exactly one decimal place
-                displayKilograms = roundedKilograms.ToString("F1");
+                    // Format the result for display 
+                    // The "F1" format specifier ensures exactly one decimal place
+                    displayKilograms = roundedKilograms.ToString("F1");
+                }
+            });
+
+            ButtonContent = "Lectura en proceso";
+            for (int i = hitTime; i >= 1; i--)
+            {
+                mainWindow.PunchScore = i.ToString();
+                await Task.Delay(1000);
             }
 
+            Task.WaitAll(readScore);
             mainWindow.PunchScore = $"Fuerza generada: {displayKilograms}";
 
             // send stop command (0) to arduino
             serialPort.WriteLine("0");
 
             serialPort.Close();
-       
+            startButton.IsEnabled = true;
+
             ButtonContent = "Iniciar";
         }
     }
-
 }

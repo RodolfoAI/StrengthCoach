@@ -82,7 +82,7 @@ namespace StrengthCoach.View.UserControls
                 string selectedStudent = studentComboBox.SelectedItem.ToString();
 
                 // Store values for use
-                System.Diagnostics.Debug.WriteLine($"PunchScore: {punchScoreText}");
+                System.Diagnostics.Debug.WriteLine($"PunchScore: {punchScoreValue}");
                 System.Diagnostics.Debug.WriteLine($"Selected Student: {selectedStudent}");
 
                 // Save in DB
