@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using StrengthCoach.Resources;
 
 namespace StrengthCoach.View.UserControls
 {
@@ -56,8 +57,7 @@ namespace StrengthCoach.View.UserControls
             // Reset display reading
             mainWindow.PunchScore = "Fuerza generada: ";
             
-
-            // Establish connection with arduino
+            // Establish connection with microcontroller
             serialPort = new SerialPort("COM5", 9600);
             try { 
                 serialPort.Open();
@@ -70,7 +70,7 @@ namespace StrengthCoach.View.UserControls
                 return;
             }
 
-            // send start command (1) to arduino
+            // send start command (1) to microcontroller
             serialPort.WriteLine("1");
 
             int hitTime = 6;
@@ -102,13 +102,15 @@ namespace StrengthCoach.View.UserControls
             for (int i = hitTime; i >= 1; i--)
             {
                 mainWindow.PunchScore = i.ToString();
-                await Task.Delay(1000);
+                await SoundResources.PlayCountdownSoundAsync();
+                // 1 second delay is being handled inside PlayCountdownSoundAsync
+                //await Task.Delay(1000);
             }
 
             Task.WaitAll(readScore);
             mainWindow.PunchScore = $"Fuerza generada: {displayKilograms}";
 
-            // send stop command (0) to arduino
+            // send stop command (0) to microcontroller
             serialPort.WriteLine("0");
 
             serialPort.Close();

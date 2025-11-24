@@ -1,4 +1,6 @@
 using StrengthCoach.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace StrengthCoach.Data
 {
@@ -57,6 +59,43 @@ namespace StrengthCoach.Data
             {
                 return context.Students
                     .Select(s => s.Name)
+                    .ToList();
+            }
+        }
+
+        public static List<StudentRankingViewModel> GetStudentRanking(RankingCategory category = RankingCategory.General)
+        {
+            using (var context = new StrengthCoachDbContext())
+            {
+                // Load all students and their punch records into memory
+                var studentsWithRecords = context.Students
+                    .Include(s => s.PunchRecords)
+                    .AsNoTracking()
+                    .ToList();
+
+                // Filter by age category
+                var filteredStudents = category switch
+                {
+                    RankingCategory.Kids => studentsWithRecords.Where(s => s.Age >= 1 && s.Age <= 12),
+                    RankingCategory.Teenagers => studentsWithRecords.Where(s => s.Age >= 13 && s.Age <= 19),
+                    RankingCategory.Adults => studentsWithRecords.Where(s => s.Age >= 20),
+                    _ => studentsWithRecords // General
+                };
+
+                // Perform aggregation on client side
+                return filteredStudents
+                    .Where(s => s.PunchRecords.Any())
+                    .Select(student => 
+                    {
+                        var maxPunch = student.PunchRecords.MaxBy(r => r.Force);
+                        return new StudentRankingViewModel
+                        {
+                            Name = student.Name,
+                            HitForce = maxPunch.Force,
+                            Date = maxPunch.RecordedAt
+                        };
+                    })
+                    .OrderByDescending(r => r.HitForce)
                     .ToList();
             }
         }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:StrengthCoach"
         xmlns:userControls="clr-namespace:StrengthCoach.View.UserControls"
         mc:Ignorable="d" WindowStyle="None" MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="MainWindow" Height="450" Width="800" Background="#333333"
+        Title="MainWindow" Height="450" Width="900" Background="#333333"
         Loaded="Window_Loaded">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0"/>
@@ -108,10 +108,88 @@
 
             <!--Right side (Strength ranking)-->
             <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
+                <!--Ranking Chart-->
+                <Border Grid.Row="1" BorderThickness="2" BorderBrush="#444444" Margin="2">
+                    <StackPanel Orientation="Vertical">
+                        <!--Title-->
+                        <Border CornerRadius="5" Margin="10,5,10,0" BorderThickness="1" BorderBrush="Black">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,2">
+                                    <GradientStop Color="#1a3a52" Offset="0.0"/>
+                                    <GradientStop Color="#2e2d2d" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <TextBlock Text="Rankings" HorizontalAlignment="Center" Foreground="White" 
+                                FontWeight="Bold" Padding="5" FontSize="20"/>
+                        </Border>
+
+                        <!--DataGrid for ranking-->
+                        <DataGrid ItemsSource="{Binding StudentRanking}" AutoGenerateColumns="False" 
+                                  Margin="10,10,10,10" Background="#444444" Foreground="White"
+                                  GridLinesVisibility="None" RowBackground="#555555" 
+                                  AlternatingRowBackground="#474747" HeadersVisibility="Column">
+                            <DataGrid.ColumnHeaderStyle>
+                                <Style TargetType="DataGridColumnHeader">
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="#444444"/>
+                                    <Setter Property="BorderThickness" Value="1"/>
+                                    <Setter Property="Padding" Value="5"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                </Style>
+                            </DataGrid.ColumnHeaderStyle>
+
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="*" 
+                                                    IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Fuerza (kg)" Binding="{Binding HitForce}" 
+                                                    Width="*" IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding Date, StringFormat='dd/MM/yyyy'}" 
+                                                    Width="*" IsReadOnly="True">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <!--Category Filter Buttons-->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,5,10,5">
+                            <Button x:Name="GeneralButton" Content="General" Click="RankingCategory_Click"
+                                Background="#1a3a52" Foreground="White" Padding="10,5" Margin="2"
+                                FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
+                                Width="auto" Cursor="Hand"/>
+                                                    <Button x:Name="KidsButton" Content="Niños (1-12)" Click="RankingCategory_Click"
+                                Background="#444444" Foreground="White" Padding="10,5" Margin="2"
+                                FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
+                                Width="auto" Cursor="Hand"/>
+                                                    <Button x:Name="TeenagersButton" Content="Adolescentes (13-19)" Click="RankingCategory_Click"
+                                Background="#444444" Foreground="White" Padding="10,5" Margin="2"
+                                FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
+                                Width="auto" Cursor="Hand"/>
+                                                    <Button x:Name="AdultsButton" Content="Adultos (20+)" Click="RankingCategory_Click"
+                                Background="#444444" Foreground="White" Padding="10,5" Margin="2"
+                                FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
+                                Width="auto" Cursor="Hand"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Grid>
     </Grid>

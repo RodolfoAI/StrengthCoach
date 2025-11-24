@@ -1,5 +1,6 @@
 ﻿using StrengthCoach.View.UserControls;
 using StrengthCoach.Data;
+using StrengthCoach.Models;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -21,10 +22,13 @@ namespace StrengthCoach
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        private RankingCategory currentCategory = RankingCategory.General;
+
         public MainWindow()
         {
             DataContext = this;
             students = new ObservableCollection<string>();
+            studentRanking = new ObservableCollection<StudentRankingViewModel>();
 
             InitializeComponent();
         }
@@ -49,10 +53,23 @@ namespace StrengthCoach
             set { students = value; }
         }
 
+        private ObservableCollection<StudentRankingViewModel> studentRanking;
+
+        public ObservableCollection<StudentRankingViewModel> StudentRanking
+        {
+            get { return studentRanking; }
+            set
+            {
+                studentRanking = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void OnPropertyChanged([CallerMemberName] string? propertyname = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();
@@ -62,11 +79,50 @@ namespace StrengthCoach
         {
             DatabaseService.InitializeDatabase();
 
-            // Load students from database
             List<string> studentsFromDb = DatabaseService.GetAllStudents();
 
             foreach (var student in studentsFromDb)
                 Students.Add(student);
+
+            RefreshRanking();
+        }
+
+        public void RefreshRanking()
+        {
+            List<StudentRankingViewModel> rankingData = DatabaseService.GetStudentRanking(currentCategory);
+            StudentRanking.Clear();
+            foreach (var entry in rankingData)
+                StudentRanking.Add(entry);
+        }
+
+        private void RankingCategory_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button)
+            {
+                currentCategory = button.Name switch
+                {
+                    "GeneralButton" => RankingCategory.General,
+                    "KidsButton" => RankingCategory.Kids,
+                    "TeenagersButton" => RankingCategory.Teenagers,
+                    "AdultsButton" => RankingCategory.Adults,
+                    _ => RankingCategory.General
+                };
+
+                RefreshRanking();
+                UpdateButtonStyles();
+            }
+        }
+
+        private void UpdateButtonStyles()
+        {
+            GeneralButton.Background = new SolidColorBrush(currentCategory == RankingCategory.General ? 
+                Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
+            KidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Kids ? 
+                Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
+            TeenagersButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Teenagers ? 
+                Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
+            AdultsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Adults ? 
+                Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
         }
     }
 }

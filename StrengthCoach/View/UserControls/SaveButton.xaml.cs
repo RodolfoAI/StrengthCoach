@@ -110,6 +110,9 @@ namespace StrengthCoach.View.UserControls
                     MessageBox.Show($"Error al guardar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     ButtonContent = "Guardar";
                 }
+
+                // Update ranking
+                mainWindow.RefreshRanking();
             }
         }
     }
