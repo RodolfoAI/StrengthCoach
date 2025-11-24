@@ -54,7 +54,7 @@ namespace StrengthCoach.View.UserControls
             // Get the MainWindow instance
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
             // Reset display reading
-            mainWindow.PunchScore = $"Fuerza generada: ";
+            mainWindow.PunchScore = "Fuerza generada: ";
 
             ButtonContent = "Iniciando lectura";
 

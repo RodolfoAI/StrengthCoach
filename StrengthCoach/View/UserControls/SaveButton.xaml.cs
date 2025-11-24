@@ -54,25 +54,47 @@ namespace StrengthCoach.View.UserControls
             if (mainWindow != null)
             {
                 ButtonContent = "Guardando";
-                // Access the PunchScore property
-                string punchScoreValue = mainWindow.PunchScore;
+                
+                string punchScoreText = mainWindow.PunchScore;
+
+                string[] punchScoreTextSplit = punchScoreText.Split(':');
+                string punchScoreValue = punchScoreTextSplit[1].Trim();
+
+                // Validate PunchScore
+                if (string.IsNullOrWhiteSpace(punchScoreValue))
+                {
+                    MessageBox.Show("El puntaje no puede estar vacío.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ButtonContent = "Guardar";
+                    return;
+                }
 
                 // Access selected student
                 ComboBox studentComboBox = mainWindow.FindName("studentComboBox") as ComboBox;
-                //handle the null case safely
-                string selectedStudent = studentComboBox?.SelectedItem?.ToString() ?? "No student selected";
+
+                // Validate student selection
+                if (studentComboBox?.SelectedItem?.ToString() == null)
+                {
+                    MessageBox.Show("Seleccione un estudiante antes de guardar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ButtonContent = "Guardar";
+                    return;
+                }
+
+                string selectedStudent = studentComboBox.SelectedItem.ToString();
 
                 // Store values for use
-                System.Diagnostics.Debug.WriteLine($"PunchScore: {punchScoreValue}");
+                System.Diagnostics.Debug.WriteLine($"PunchScore: {punchScoreText}");
                 System.Diagnostics.Debug.WriteLine($"Selected Student: {selectedStudent}");
 
-                //save in DB
+                // Save in DB
+
 
                 MessageBox.Show("Guardado exitosamente", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
-                // Update button content
+
+                // Update UI
                 ButtonContent = "Guardar";
-                
-                
+                mainWindow.PunchScore = "Fuerza generada: ";
+
+
             }
         }
     }

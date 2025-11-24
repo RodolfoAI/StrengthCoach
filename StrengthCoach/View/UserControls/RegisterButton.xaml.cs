@@ -54,22 +54,30 @@ namespace StrengthCoach.View.UserControls
             Window mainWindow = Application.Current.MainWindow;
 
             // Find the DataEntry control named "studentAgeEntry"
-            DataEntry studentAgeEntry = mainWindow.FindName("studentAgeEntry") as DataEntry;
+            DataEntry studentAgeControl = mainWindow.FindName("studentAgeEntry") as DataEntry;
 
             // Find the DataEntry control named "studentNameEntry"
-            DataEntry studentNameEntry = mainWindow.FindName("studentNameEntry") as DataEntry;
+            DataEntry studentNameControl = mainWindow.FindName("studentNameEntry") as DataEntry;
 
-            if (studentAgeEntry != null && studentNameEntry != null)
+            if (string.IsNullOrEmpty(studentNameControl.TextContent))
             {
-                string studentAgeEntryContent = studentAgeEntry.TextContent;
-                string studentNameEntryContent = studentNameEntry.TextContent;
-                // Use the content as needed
-                System.Diagnostics.Debug.WriteLine($"Name content: {studentNameEntryContent}");
-                System.Diagnostics.Debug.WriteLine($"Age content: {studentAgeEntryContent}");
-                
-                MessageBox.Show("Registro exisotoso", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Favor de ingresar nombre del estudiante.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
             }
+
+            if (string.IsNullOrEmpty(studentAgeControl.TextContent))
+            {
+                MessageBox.Show("Favor de ingresar edad del estudiante.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string studentName = studentNameControl.TextContent;
+            string studentAge = studentAgeControl.TextContent;
+
+            //save in db
+
+            MessageBox.Show("Registro exisotoso", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+            ButtonContent = "Registrar";
         }
     }
 }
-
