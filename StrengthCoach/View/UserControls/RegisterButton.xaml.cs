@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using StrengthCoach.Data;
 
 namespace StrengthCoach.View.UserControls
 {
@@ -57,27 +58,59 @@ namespace StrengthCoach.View.UserControls
             DataEntry studentAgeControl = mainWindow.FindName("studentAgeEntry") as DataEntry;
 
             // Find the DataEntry control named "studentNameEntry"
-            DataEntry studentNameControl = mainWindow.FindName("studentNameEntry") as DataEntry;
+            DataEntry studentNameControl = mainWindow.FindName("studentNameEntry") as DataEntry;                
 
             if (string.IsNullOrEmpty(studentNameControl.TextContent))
             {
                 MessageBox.Show("Favor de ingresar nombre del estudiante.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ButtonContent = "Registrar";
                 return;
             }
 
             if (string.IsNullOrEmpty(studentAgeControl.TextContent))
             {
                 MessageBox.Show("Favor de ingresar edad del estudiante.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ButtonContent = "Registrar";
                 return;
             }
 
             string studentName = studentNameControl.TextContent;
-            string studentAge = studentAgeControl.TextContent;
+            
+            if (!int.TryParse(studentAgeControl.TextContent, out int studentAge))
+            {
+                MessageBox.Show("La edad debe ser un número válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ButtonContent = "Registrar";
+                return;
+            }
 
-            //save in db
+            try
+            {
+                await Task.Run(() => DatabaseService.RegisterStudent(studentName, studentAge));
 
-            MessageBox.Show("Registro exisotoso", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
-            ButtonContent = "Registrar";
+                MessageBox.Show("Registro exitoso", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
+                
+                // Refresh the students list in MainWindow
+                MainWindow mainWindowInstance = mainWindow as MainWindow;
+                if (mainWindowInstance != null)
+                {
+                    mainWindowInstance.Students.Clear();
+                    foreach (var student in DatabaseService.GetAllStudents())
+                    {
+                        mainWindowInstance.Students.Add(student);
+                    }
+                }
+
+                // Clear the input fields
+                studentNameControl.TextContent = "";
+                studentAgeControl.TextContent = "";
+
+                ButtonContent = "Registrar";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al registrar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                ButtonContent = "Registrar";
+            }
         }
     }
 }

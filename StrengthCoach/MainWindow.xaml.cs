@@ -1,4 +1,5 @@
 ﻿using StrengthCoach.View.UserControls;
+using StrengthCoach.Data;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -59,17 +60,13 @@ namespace StrengthCoach
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            List<string> studentsFromDb = GetDatabaseData();
+            DatabaseService.InitializeDatabase();
+
+            // Load students from database
+            List<string> studentsFromDb = DatabaseService.GetAllStudents();
 
             foreach (var student in studentsFromDb)
                 Students.Add(student);
-        }
-
-        private List<string> GetDatabaseData()
-        {
-            // **YOUR ACTUAL ADO.NET/EF CORE LOGIC GOES HERE**
-            // This example simulates getting a list of customer names or category names.
-            return new List<string> { "Rodolfo Lopez", "Maria Guadalupe", "Erika Mendoza", "El jorshi" };
         }
     }
 }

@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using StrengthCoach.Data;
 
 namespace StrengthCoach.View.UserControls
 {
@@ -86,15 +87,29 @@ namespace StrengthCoach.View.UserControls
                 System.Diagnostics.Debug.WriteLine($"Selected Student: {selectedStudent}");
 
                 // Save in DB
+                try
+                {
+                    if (decimal.TryParse(punchScoreValue, out decimal force))
+                    {
+                        await Task.Run(() => DatabaseService.SavePunchRecord(selectedStudent, force));
+                        
+                        MessageBox.Show("Guardado exitosamente", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
 
-
-                MessageBox.Show("Guardado exitosamente", "Exitoso", MessageBoxButton.OK, MessageBoxImage.Information);
-
-                // Update UI
-                ButtonContent = "Guardar";
-                mainWindow.PunchScore = "Fuerza generada: ";
-
-
+                        // Update UI
+                        ButtonContent = "Guardar";
+                        mainWindow.PunchScore = "Fuerza generada: ";
+                    }
+                    else
+                    {
+                        MessageBox.Show("El formato del puntaje no es válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        ButtonContent = "Guardar";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al guardar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ButtonContent = "Guardar";
+                }
             }
         }
     }
