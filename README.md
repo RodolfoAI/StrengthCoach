@@ -1,3 +1,5 @@
+This is a freelance continuation of a project I did for a martial arts business when graduating from my Associate's degree in Mechatronics. You can find the academic presentation here: https://docs.google.com/presentation/d/19fxrKF5VyuEJWEEm1VYVjVhd2IPao7sE/edit?slide=id.p1#slide=id.p1
+
 ## 🏋️ StrengthCoach To-Do List
 
 * Add a delete student option.

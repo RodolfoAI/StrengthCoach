@@ -175,15 +175,15 @@
                                 Background="#1a3a52" Foreground="White" Padding="10,5" Margin="2"
                                 FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
                                 Width="auto" Cursor="Hand"/>
-                                                    <Button x:Name="KidsButton" Content="Niños (1-12)" Click="RankingCategory_Click"
+                            <Button x:Name="KidsButton" Content="Niños (1-12)" Click="RankingCategory_Click"
                                 Background="#444444" Foreground="White" Padding="10,5" Margin="2"
                                 FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
                                 Width="auto" Cursor="Hand"/>
-                                                    <Button x:Name="TeenagersButton" Content="Adolescentes (13-19)" Click="RankingCategory_Click"
+                            <Button x:Name="TeenagersButton" Content="Adolescentes (13-19)" Click="RankingCategory_Click"
                                 Background="#444444" Foreground="White" Padding="10,5" Margin="2"
                                 FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
                                 Width="auto" Cursor="Hand"/>
-                                                    <Button x:Name="AdultsButton" Content="Adultos (20+)" Click="RankingCategory_Click"
+                            <Button x:Name="AdultsButton" Content="Adultos (20+)" Click="RankingCategory_Click"
                                 Background="#444444" Foreground="White" Padding="10,5" Margin="2"
                                 FontSize="12" FontWeight="Bold" BorderThickness="1" BorderBrush="Black"
                                 Width="auto" Cursor="Hand"/>
