@@ -4,7 +4,8 @@ namespace StrengthCoach.Models
     {
         General,
         Kids,
+        SuperKids,
         Teenagers,
-        Adults
+        Open
     }
 }

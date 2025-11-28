@@ -76,9 +76,10 @@ namespace StrengthCoach.Data
                 // Filter by age category
                 var filteredStudents = category switch
                 {
-                    RankingCategory.Kids => studentsWithRecords.Where(s => s.Age >= 1 && s.Age <= 12),
-                    RankingCategory.Teenagers => studentsWithRecords.Where(s => s.Age >= 13 && s.Age <= 19),
-                    RankingCategory.Adults => studentsWithRecords.Where(s => s.Age >= 20),
+                    RankingCategory.Kids => studentsWithRecords.Where(s => s.Age >= 1 && s.Age <= 8),
+                    RankingCategory.SuperKids => studentsWithRecords.Where(s => s.Age >= 9 && s.Age <= 11),
+                    RankingCategory.Teenagers => studentsWithRecords.Where(s => s.Age >= 12 && s.Age <= 15),
+                    RankingCategory.Open => studentsWithRecords.Where(s => s.Age >= 16),
                     _ => studentsWithRecords // General
                 };
 

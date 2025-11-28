@@ -39,7 +39,7 @@ void loop() {
           highest_force = cycle_force;
         }
         
-        if ((millis() - start_time) >= 6000) {
+        if ((millis() - start_time) >= 4000) {
 
           if (highest_force > threshold_force) {
             Serial.println(highest_force);

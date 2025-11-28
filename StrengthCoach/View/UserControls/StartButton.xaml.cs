@@ -73,7 +73,7 @@ namespace StrengthCoach.View.UserControls
             // send start command (1) to microcontroller
             serialPort.WriteLine("1");
 
-            int hitTime = 6;
+            int hitTime = 4;
             string displayKilograms = "0.0";
 
             StartButton startButton = mainWindow.FindName("startButton") as StartButton;

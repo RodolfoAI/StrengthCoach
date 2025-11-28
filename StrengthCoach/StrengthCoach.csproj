@@ -9,10 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\rampla_logo.jpg" />
     <None Remove="Resources\Sounds\short-beep.mp3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\rampla_logo.jpg" />
     <EmbeddedResource Include="Resources\Sounds\short-beep.mp3" />
   </ItemGroup>
 

@@ -103,8 +103,9 @@ namespace StrengthCoach
                 {
                     "GeneralButton" => RankingCategory.General,
                     "KidsButton" => RankingCategory.Kids,
+                    "SuperKidsButton" => RankingCategory.SuperKids,
                     "TeenagersButton" => RankingCategory.Teenagers,
-                    "AdultsButton" => RankingCategory.Adults,
+                    "AdultsButton" => RankingCategory.Open,
                     _ => RankingCategory.General
                 };
 
@@ -117,11 +118,13 @@ namespace StrengthCoach
         {
             GeneralButton.Background = new SolidColorBrush(currentCategory == RankingCategory.General ? 
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
-            KidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Kids ? 
+            KidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Kids ?
+                Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
+            SuperKidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.SuperKids ? 
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
             TeenagersButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Teenagers ? 
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
-            AdultsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Adults ? 
+            AdultsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Open ? 
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
         }
     }
