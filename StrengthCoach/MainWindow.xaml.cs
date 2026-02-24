@@ -85,6 +85,34 @@ namespace StrengthCoach
                 Students.Add(student);
 
             RefreshRanking();
+
+            RefreshAvailableComPorts();
+        }
+
+        private void RefreshAvailableComPorts()
+        {
+            ComboBox comPortComboBox = FindName("comPortComboBox") as ComboBox;
+            if (comPortComboBox != null)
+            {
+                var currentSelection = comPortComboBox.SelectedItem?.ToString();
+                var availablePorts = StrengthCoach.Resources.SerialPortHelper.GetAvailableComPorts();
+
+                comPortComboBox.Items.Clear();
+                foreach (var port in availablePorts)
+                {
+                    comPortComboBox.Items.Add(port);
+                }
+
+                // Try to maintain the previous selection, or select the first port
+                if (!string.IsNullOrEmpty(currentSelection) && availablePorts.Contains(currentSelection))
+                {
+                    comPortComboBox.SelectedItem = currentSelection;
+                }
+                else if (availablePorts.Count > 0)
+                {
+                    comPortComboBox.SelectedIndex = 0;
+                }
+            }
         }
 
         public void RefreshRanking()
@@ -116,16 +144,22 @@ namespace StrengthCoach
 
         private void UpdateButtonStyles()
         {
-            GeneralButton.Background = new SolidColorBrush(currentCategory == RankingCategory.General ? 
+            GeneralButton.Background = new SolidColorBrush(currentCategory == RankingCategory.General ?
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
             KidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Kids ?
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
-            SuperKidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.SuperKids ? 
+            SuperKidsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.SuperKids ?
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
-            TeenagersButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Teenagers ? 
+            TeenagersButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Teenagers ?
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
-            AdultsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Open ? 
+            AdultsButton.Background = new SolidColorBrush(currentCategory == RankingCategory.Open ?
                 Color.FromArgb(255, 26, 58, 82) : Color.FromArgb(255, 68, 68, 68));
+        }
+
+        private void RefreshComPorts_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshAvailableComPorts();
+            MessageBox.Show("Puertos COM actualizados.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

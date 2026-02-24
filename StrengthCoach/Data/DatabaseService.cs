@@ -67,23 +67,20 @@ namespace StrengthCoach.Data
         {
             using (var context = new StrengthCoachDbContext())
             {
-                // Load all students and their punch records into memory
                 var studentsWithRecords = context.Students
                     .Include(s => s.PunchRecords)
                     .AsNoTracking()
                     .ToList();
 
-                // Filter by age category
                 var filteredStudents = category switch
                 {
                     RankingCategory.Kids => studentsWithRecords.Where(s => s.Age >= 1 && s.Age <= 8),
                     RankingCategory.SuperKids => studentsWithRecords.Where(s => s.Age >= 9 && s.Age <= 11),
                     RankingCategory.Teenagers => studentsWithRecords.Where(s => s.Age >= 12 && s.Age <= 15),
                     RankingCategory.Open => studentsWithRecords.Where(s => s.Age >= 16),
-                    _ => studentsWithRecords // General
+                    _ => studentsWithRecords 
                 };
 
-                // Perform aggregation on client side
                 return filteredStudents
                     .Where(s => s.PunchRecords.Any())
                     .Select(student => 
@@ -98,6 +95,25 @@ namespace StrengthCoach.Data
                     })
                     .OrderByDescending(r => r.HitForce)
                     .ToList();
+            }
+        }
+
+        public static void DeleteStudent(string studentName)
+        {
+            using (var context = new StrengthCoachDbContext())
+            {
+                var student = context.Students.FirstOrDefault(s => s.Name == studentName);
+      
+                if (student == null)
+                {
+                    throw new InvalidOperationException($"Student '{studentName}' not found in database.");
+                }
+
+                var punchRecords = context.PunchRecords.Where(p => p.StudentId == student.Id).ToList();
+                context.PunchRecords.RemoveRange(punchRecords);
+
+                context.Students.Remove(student);
+                context.SaveChanges();
             }
         }
     }

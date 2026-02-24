@@ -55,10 +55,20 @@ namespace StrengthCoach.View.UserControls
             // Get the MainWindow instance
             MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
             // Reset display reading
-            mainWindow.PunchScore = "Fuerza generada: ";
-            
+            mainWindow.PunchScore = "Fuerza generada: 0";
+
+            // Get the selected COM port
+            ComboBox comPortComboBox = mainWindow.FindName("comPortComboBox") as ComboBox;
+            if (comPortComboBox.SelectedItem == null || string.IsNullOrEmpty(comPortComboBox.SelectedItem.ToString()))
+            {
+                MessageBox.Show("Favor de seleccionar un puerto COM.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            string selectedPort = comPortComboBox.SelectedItem.ToString();
+
             // Establish connection with microcontroller
-            serialPort = new SerialPort("COM5", 9600);
+            serialPort = new SerialPort(selectedPort, 9600);
             try { 
                 serialPort.Open();
             }
